@@ -1,5 +1,8 @@
 {
-  "repository": "#",
+  "repository": {
+    "type": "git",
+    "url": "#"
+  },
   "license": "UNLICENSED",
   "scripts": {
     "build": "webpack --config ./bundler/webpack.prod.js",
@@ -25,5 +28,11 @@
     "webpack-cli": "^4.7.2",
     "webpack-dev-server": "^3.11.2",
     "webpack-merge": "^5.8.0"
-  }
+  },
+  "name": "raymarchingv1",
+  "description": "## Setup Download [Node.js](https://nodejs.org/en/download/). Run this followed commands:",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "author": ""
 }
