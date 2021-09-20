@@ -1,7 +1,9 @@
 uniform float time;
+uniform float progress;
 uniform sampler2D matcap;
 uniform vec2 mouse;
-uniform vec2 resolution;
+uniform vec4 resolution;
+varying vec2 vUv;
 float PI = 3.141592653589793238;
 mat4 rotationMatrix(vec3 axis, float angle) {
     axis = normalize(axis);
@@ -79,9 +81,11 @@ float sdBox( vec3 p, vec3 b )
 
 float sdf(vec3 p){
     vec3 p1 = rotate(p, vec3(1.), time/2.);
-    float box = sdBox(p1, vec3(0.25));
-    float sphere = distanceFuncSphere(p - vec3(mouse*resolution, 0.), 0.2);
-    return smin(box, sphere, 0.1);
+    float box = smin(sdBox(p1, vec3(0.25)), distanceFuncSphere(p, 0.3), 0.3);
+    float realsphere = distanceFuncSphere(p1, 0.3);
+    float final = mix(box, realsphere, progress); // Morphing
+    float sphere = distanceFuncSphere(p - vec3(mouse * resolution.zw * 3.5, 0.0), 0.2);
+    return smin(final, sphere, 0.4);
 }
 
 // //距離関数
@@ -115,16 +119,22 @@ vec3 getNormal(vec3 p)
 }
 
 void main( void ) {
-    vec2 p = (gl_FragCoord.xy * 2.0 - resolution) / min(resolution.x, resolution.y);
+    // vec2 p = (gl_FragCoord.xy * 2.0 - resolution) / min(resolution.x, resolution.y);
 
-    vec3 camPos = vec3(0.0, 0.0, 1.0); //Camera Position
-    vec3 camDir = vec3(0.0, 0.0, -1.0); //Camera Front Direction
-    vec3 camUp = vec3(0.0, 1.0, 0.0); //Camera Up Direction
-    vec3 camSide = cross(camDir, camUp); //Camera Side Direction
+    // vec3 camPos = vec3(0.0, 0.0, 1.0); //Camera Position
+    // vec3 camDir = vec3(0.0, 0.0, -1.0); //Camera Front Direction
+    // vec3 camUp = vec3(0.0, 1.0, 0.0); //Camera Up Direction
+    // vec3 camSide = cross(camDir, camUp); //Camera Side Direction
 
-    float ta = 1.; //Traget Depth
+    // float ta = 1.; //Traget Depth
+    // vec3 ray = normalize(camSide * p.x + camUp * p.y + camDir * ta);
 
-    vec3 ray = normalize(camSide * p.x + camUp * p.y + camDir * ta);
+    float dist = length(vUv - vec2(0.5));
+    vec3 backGrd = mix(vec3(0.3), vec3(0.0), dist);
+
+    vec2 newUV = (vUv - vec2(0.5))*resolution.zw + vec2(0.5);
+    vec3 camPos = vec3(0., 0., 3.5);
+    vec3 ray = normalize(vec3((vUv - vec2(0.5))*resolution.zw, -1));
 
     float dis = 0.0; //Minimum distance btween the ray and the object
     float rLen = 0.0; //Length to add to the ray
@@ -147,7 +157,7 @@ void main( void ) {
 
     // vec3 normal = getNormal(rPos);
 
-    vec3 color = vec3(0.);
+    vec3 color = backGrd;
     //Collide Check
     if (t < tMax){
         vec3 pos = camPos + t * ray;
@@ -158,9 +168,15 @@ void main( void ) {
         vec2 matcapUV = getMatcap(ray, normal);
         color = vec3(diff);
         color = texture2D(matcap, matcapUV).rgb;
+
+        float fresnel = pow(1. + dot(ray, normal), 3.);
+        // color = vec3(fresnel);
+
+        color = mix(color, backGrd, fresnel);
     }
 
     gl_FragColor = vec4(color, 1.);
+    // gl_FragColor = vec4(backGrd, 1.);
     // {
     //     float n = snoise(rPos * 0.2 + time / 100.0);
     //     vec3 p = rotate(rPos,radians(time * -2.0),radians(time * 2.0),radians(time * -2.0));
