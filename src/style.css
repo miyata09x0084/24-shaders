@@ -128,7 +128,7 @@ html{
 
 .absolute 
 {
-    width: 98%;
+    width: 101%;
     height: 99%;
     position: absolute;
     display: flex;
@@ -142,7 +142,7 @@ html{
 {
     font-family: 'Courgette', cursive;
     font-size: 1.3rem;
-    letter-spacing: -0.3em;
-    color: #4f3d41;
+    letter-spacing: -0.2em;
+    color: #3f3134;
     /* font-weight: bold; */
 }

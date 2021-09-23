@@ -85,7 +85,7 @@ vec2 sdf(vec3 p){
     }
 
     float mouseSphere = distanceFuncSphere(p - vec3(mouse * resolution.zw * 3.5, 0.0), 0.2);
-    return vec2(smin(realsphere, mouseSphere, 0.4), 0.1);
+    return vec2(smin(realsphere, mouseSphere, 0.4), 0.3);
 }
 
 //distanceFunc
