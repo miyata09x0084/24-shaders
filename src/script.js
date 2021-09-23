@@ -88,6 +88,7 @@ function onWindowResize( event ) {
 function render() {
 
     material.uniforms.time.value += clock.getDelta();
+
     material.uniforms.progress.value = settings.progress;
     material.uniforms.mouse.value = mouse;    
 
