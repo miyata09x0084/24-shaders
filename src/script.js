@@ -78,7 +78,7 @@ function onWindowResize( event ) {
         a1 = 1;
         a2 = (sizes.height / sizes.width) * imageAspect
     }
-    material.uniforms.resolution.value.x = renderer.domElement. width;
+    material.uniforms.resolution.value.x = renderer.domElement.width;
     material.uniforms.resolution.value.y = renderer.domElement.height;
     material.uniforms.resolution.value.z = a1;
     material.uniforms.resolution.value.w = a2;

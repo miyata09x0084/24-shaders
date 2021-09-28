@@ -71,6 +71,7 @@ float noise(vec2 st) {
 vec2 sdf(vec3 p){
     // vec3 p1 = rotate(p, vec3(1.), time/2.);
     // float num = 0.3 + 0.1*sin(time/3.) + 0.2*cos(time/6.) + 0.05*sin(time);
+    float num = 0.2 + 0.1*cos(time/4.) + 0.3*sin(time/7.) + 0.04*(cos(time));
     // float box = smin(sdBox(p1, vec3(0.2)), distanceFuncSphere(p, 0.2), 0.3);
 
     float realsphere = distanceFuncSphere(p, 0.35);
@@ -84,8 +85,8 @@ vec2 sdf(vec3 p){
         realsphere = smin(realsphere, gotoCneter, 0.2);
     }
 
-    float mouseSphere = distanceFuncSphere(p - vec3(mouse * resolution.zw * 3.5, 0.0), 0.2);
-    return vec2(smin(realsphere, mouseSphere, 0.4), 0.3);
+    float mouseSphere = distanceFuncSphere(p - vec3(mouse * resolution.zw * 3.5, 0.0), 0.2 + num*0.5);
+    return vec2(smin(realsphere, mouseSphere, 0.4), 0.1);
 }
 
 //distanceFunc
@@ -121,7 +122,7 @@ void main( void ) {
     float rLen = 0.0; //Length to add to the ray
     vec3 rayPos = camPos;
     float t = 0.;
-    float tMax = 4.;
+    float tMax = 5.;
 
     //マーチングループ
     for(int i = 0; i < 256; i++)
@@ -150,7 +151,7 @@ void main( void ) {
         color = vec3(diff);
         color = texture2D(matcap, matcapUV).rgb;
 
-        float fresnel = pow(1. + dot(ray, normal), 2.8); // Reflectional effect
+        float fresnel = pow(1. + dot(ray, normal), 10.); // Reflectional effect
 
         color = mix(color, backGrd, fresnel);
     }
